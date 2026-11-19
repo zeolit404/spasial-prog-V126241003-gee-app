@@ -11,7 +11,7 @@
 ---
 
 ## Tautan Penting
-* **Script Aplikasi Google Earth Engine:** [Buka Script Aplikasi di GEE Code Editor](https://code.earthengine.google.com/b9948408f237f394463d76e469274246) *(Salinan skrip utuh tersimpan di [`script/app.js`](script/app.js))*
+* **Script Aplikasi Google Earth Engine:** [Buka Script Aplikasi di GEE Code Editor (Snapshot Langsung)](https://code.earthengine.google.com/6a1290b2c5095b09008118760a3d85d7) *(Salinan skrip utuh tersimpan di [`script/app.js`](script/app.js))*
 * **Repositori GitHub:** [zeolit404/spasial-prog-V126241003-gee-app](https://github.com/zeolit404/spasial-prog-V126241003-gee-app)
 * **Repositori Asal Analisis (Tugas 1):** [zeolit404/regresi_rf_V126241003](https://github.com/zeolit404/regresi_rf_V126241003)
 
