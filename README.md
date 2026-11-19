@@ -24,7 +24,7 @@ Pengukuran biomassa atas permukaan (*Aboveground Biomass Density* / AGBD) selama
 Aplikasi ini dikembangkan untuk menyediakan platform pemantauan biomassa interaktif berbasis komputasi awan pada Kawasan Ibu Kota Nusantara (IKN), Kalimantan Timur. Mengingat IKN dirancang dengan visi kota hutan cerdas (*smart forest city*) yang mewajibkan 65% wilayahnya dipertahankan sebagai kawasan lindung bervegetasi rapat, aplikasi ini memberikan kemudahan inspeksi nilai biomassa secara langsung (*on-the-fly*) pada titik mana pun yang dipilih pengguna di atas peta.
 
 **Tujuan Aplikasi:**
-1. Mengemas model regresi *Random Forest* dan data spasial biomassa ke dalam antarmuka web interaktif menggunakan pustaka GEE UI (`ui.Panel`, `ui.Map`, `ui.SplitPanel`).
+1. Mengemas model regresi *Random Forest* dan data spasial biomassa ke dalam antarmuka web interaktif menggunakan pustaka GEE UI (`ui.Panel`, `ui.Map`, `ui.root.insert`, `ui.root.add`).
 2. Menyediakan fitur inspeksi piksel interaktif (*Pixel Inspector*) untuk membaca nilai koordinat, nilai biomassa prediksi, dan data observasi GEDI secara riil saat peta diklik.
 3. Menampilkan indikator statistik deskriptif dan metrik validasi akurasi model ($R^2$, $RMSE$, Pearson $r$) secara terintegrasi berdampingan dengan peta utama.
 
@@ -36,7 +36,7 @@ Konten yang disajikan dalam aplikasi ini berakar dari hasil pemodelan regresi **
 
 | Dataset | Sumber / Koleksi GEE | Resolusi | Fungsi dalam Aplikasi |
 |---|---|---|---|
-| **Estimasi AGBD (Prediksi)** | Hasil inferensi model *Random Forest* (300 pohon) | ~1.000 m | Layer raster kontinu sebaran biomassa hutan (0–400 Mg/ha) |
+| **Estimasi AGBD (Prediksi)** | Hasil inferensi model *Random Forest* (100 pohon) | ~1.000 m | Layer raster kontinu sebaran biomassa hutan (0–400 Mg/ha) |
 | **GEDI AGBD Referensi** | `LARSE/GEDI/GEDI04_B_002` (Band `MU`) | ~1.000 m | Layer validasi jejak LiDAR satelit ISS |
 | **Satellite Embedding V1** | `GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL` | ~10 m / 1.000 m | Fitur prediktor laten multi-spektral spasial (64 band) |
 | **Masking Tutupan Hutan** | `MODIS/061/MCD12Q1` (Band `LC_Type1`) | 500 m | Membatasi tampilan dan analisis murni pada kanopi pohon |
@@ -46,7 +46,7 @@ Konten yang disajikan dalam aplikasi ini berakar dari hasil pemodelan regresi **
 
 ## 3. Fitur dan Komponen Antarmuka Aplikasi
 
-Antarmuka aplikasi dibangun menggunakan tata letak tiga panel horizontal (*three-panel split layout*):
+Antarmuka aplikasi dibangun menggunakan tata letak tiga panel horizontal (*three-panel layout*):
 
 | Nama Komponen | Tipe Widget GEE | Letak di Aplikasi | Status Komponen | Fungsi Utama |
 |---|---|---|---|---|
@@ -56,8 +56,8 @@ Antarmuka aplikasi dibangun menggunakan tata letak tiga panel horizontal (*three
 | **Slider Opacity** | `ui.Slider` | Panel Kiri (Tengah) | **Wajib Praktikum** | Mengatur tingkat transparansi layer raster secara dinamis (0.0–1.0) |
 | **Pixel Inspector** | `ui.Panel` & `Map.onClick` | Panel Kiri (Bawah) | **Fitur Tambahan** | Menampilkan koordinat dan perbandingan nilai piksel saat peta diklik |
 | **Peta Utama** | `ui.Map` (Hybrid) | Panel Tengah | **Wajib Praktikum** | Kanvas visualisasi spasial interaktif dengan kursor bidik (*crosshair*) |
-| **Metrik Akurasi** | `ui.Label` & `.evaluate()` | Panel Kanan (Atas) | **Wajib Praktikum** | Menampilkan skor $R^2$ (0,7120), $RMSE$ (39,80 Mg/ha), dan Pearson $r$ (0,8446) |
-| **Ringkasan Statistik** | `ui.Label` | Panel Kanan (Tengah) | **Fitur Tambahan** | Menampilkan nilai *Mean*, *Median*, *Std Dev*, *Min*, dan *Max* AGBD |
+| **Metrik Akurasi** | `ui.Label` & `.evaluate()` | Panel Kanan (Atas) | **Wajib Praktikum** | Menampilkan skor $R^2$ (0,4508), $RMSE$ (50,53 Mg/ha), dan Pearson $r$ (0,6735) |
+| **Ringkasan Statistik** | `ui.Label` & `.evaluate()` | Panel Kanan (Tengah) | **Fitur Tambahan** | Menampilkan nilai *Mean* (170,94 Mg/ha), *Median* (173,50 Mg/ha), *Std Dev*, *Min*, dan *Max* |
 | **Grafik Uji Validasi** | `ui.Chart.feature.byFeature` | Panel Kanan (Bawah) | **Fitur Tambahan** | Diagram sebar (*scatter plot*) data uji observasi vs prediksi 1:1 |
 
 ---
@@ -65,7 +65,7 @@ Antarmuka aplikasi dibangun menggunakan tata letak tiga panel horizontal (*three
 ## 4. Panduan Penggunaan Aplikasi
 
 ![Tampilan Utama Aplikasi](gambar/01_tampilan_utama.png)  
-*Gambar 1. Tampilan Utama Antarmuka Aplikasi Geospasial Interaktif Tiga Panel di Google Earth Engine.*
+*Gambar 1. Tampilan Utama Antarmuka Aplikasi Geospasial Interaktif Tiga Panel di Google Earth Engine (Kawasan IKN).*
 
 Langkah-langkah pengoperasian aplikasi:
 
@@ -75,16 +75,16 @@ Langkah-langkah pengoperasian aplikasi:
    Gunakan kotak centang (*checkbox*) di panel kiri untuk menampilkan atau menyembunyikan layer. Atur slider *Opacity* untuk menyesuaikan transparansi layer raster di atas citra satelit Google Hybrid.
 
 ![Detail Panel Kontrol](gambar/02_panel_kontrol.png)  
-*Gambar 2. Detail Panel Kontrol Sisi Kiri dengan Anotasi Pengaturan Layer, Legenda, Slider Transparansi, dan Pixel Inspector.*
+*Gambar 2. Detail Panel Kontrol Sisi Kiri dengan Anotasi Pengaturan Layer, Legenda Gradasi, Slider Transparansi, dan Pixel Inspector.*
 
 3. **Melakukan Inspeksi Titik Kanopi (Pixel Inspector):**  
    Arahkan kursor bidik (*crosshair*) ke area mana pun di dalam batas IKN pada peta, lalu klik satu kali. Pin merah akan menandai lokasi klik, dan panel kiri akan langsung menampilkan nilai koordinat desimal, estimasi biomassa model Random Forest, serta data observasi GEDI NASA di titik tersebut.
 
-![Contoh Hasil Interaksi](gambar/03_contoh_hasil_interaksi.png)  
-*Gambar 3. Contoh Hasil Interaksi Pengguna saat Mengklik Titik Kanopi Hutan Lindung di Sekitar Sepaku / Bukit Soeharto.*
+![Detail Panel Analisis](gambar/03_contoh_hasil_interaksi.png)  
+*Gambar 3. Detail Panel Analisis Sisi Kanan Memuat Evaluasi Model, Statistik Biomassa IKN, dan Scatter Plot Observasi vs Prediksi.*
 
 4. **Membaca Statistik dan Metrik Model:**  
-   Lihat panel sisi kanan untuk mencermati evaluasi akurasi model ($R^2$ dan $RMSE$) serta parameter ringkasan statistik biomassa kanopi IKN.
+   Lihat panel sisi kanan untuk mencermati evaluasi akurasi model ($R^2 = 0,4508$ dan $RMSE = 50,53\text{ Mg/ha}$) serta parameter ringkasan statistik biomassa kanopi IKN (rata-rata $170,94\text{ Mg/ha}$ dan nilai maksimum $307,54\text{ Mg/ha}$).
 
 ---
 
@@ -96,27 +96,25 @@ Alur integrasi antarmuka GEE disusun dengan diagram event berikut:
 [ Inisialisasi Script ]
          │
          ▼
-[ ui.root.clear() ] ───► Bersihkan layout standar Code Editor
+[ Inisialisasi Layer & Peta ] ───► Map.centerObject(aoi, 10), Map.setOptions('HYBRID')
          │
          ├────────────────────────┬────────────────────────┐
          ▼                        ▼                        ▼
- [ Panel Kiri: 320px ]   [ Peta Tengah: ui.Map ]   [ Panel Kanan: 350px ]
+ [ Panel Kiri: 310px ]   [ Peta Tengah: ui.Map ]   [ Panel Kanan: 330px ]
   • Judul & Identitas     • Set Center (IKN)        • Metrik Model R², RMSE
   • Layer Checkboxes      • Cursor: Crosshair       • Statistik Deskriptif
   • Legenda & Opacity     • Event: Map.onClick      • Scatter Chart (1:1)
   • Pixel Inspector                │
          │                         │
-         └─────────────┬───────────┘
-                       │ Event Trigger: Pengguna mengklik peta
-                       ▼
-       [ map.onClick(function(coords)) ]
-                       │
-                       ├─► Pasang marker dot merah pada koordinat klik
-                       └─► Ekstrak nilai piksel via reduceRegion()
+         ▼                         │
+ [ ui.root.insert(0, leftPanel) ]  │
+                                   ▼
+                       [ ui.root.add(rightPanel) ]
                                    │
                                    ▼
-              [ inspectorContent.evaluate(updateUI) ]
-              Tampilkan Lon, Lat, Nilai Prediksi, & Observasi
+                    Event Trigger: Map.onClick
+                    Ekstrak piksel via reduceRegion()
+                    Tampilkan Lon, Lat, Prediksi, & GEDI
 ```
 
 ---
@@ -124,15 +122,15 @@ Alur integrasi antarmuka GEE disusun dengan diagram event berikut:
 ## 6. Pembahasan Hasil Keluaran Aplikasi
 
 Aplikasi ini berhasil memperlihatkan kontras spasial cadangan biomassa di Kawasan IKN:
-* **Zona Hutan Kerapatan Tinggi:** Di bagian barat dan barat daya IKN (area perbukitan penyangga Hutan Lindung Bukit Soeharto), nilai prediksi biomassa yang muncul pada *Pixel Inspector* konsisten berada pada rentang **200–350 Mg/ha**.
-* **Zona Koridor Pembangunan dan HTI:** Di koridor tengah Kecamatan Sepaku yang didominasi perkebunan kayu monokultur terkelola dan area rintisan jalan, nilai inspeksi biomassa berada pada rentang **40–110 Mg/ha**.
+* **Zona Hutan Kerapatan Tinggi:** Di bagian barat dan barat daya IKN (area perbukitan penyangga Hutan Lindung Bukit Soeharto), nilai estimasi biomassa kanopi mencapai **200–307 Mg/ha**.
+* **Zona Koridor Pembangunan dan HTI:** Di koridor tengah Kecamatan Sepaku yang didominasi perkebunan kayu monokultur terkelola dan area rintisan jalan, nilai inspeksi biomassa berada pada rentang **77–150 Mg/ha**.
 * **Umpan Balik Real-Time:** Dengan mengaktifkan slider transparansi, pengguna dapat memverifikasi kesesuaian antara warna hijau gelap pada peta biomassa dengan kerapatan kanopi pohon pada citra satelit resolusi tinggi Google Hybrid di bawahnya.
 
 ---
 
 ## 7. Keterbatasan dan Rencana Pengembangan
 
-* **Keterbatasan Saat Ini:** Resolusi spasial inferensi regresi dibatasi pada skala grid 1.000 meter untuk menjaga responsivitas eksekusi antarmuka GEE tanpa mengalami kendala batas memori peramban (*browser memory limit*).
+* **Keterbatasan Saat Ini:** Resolusi spasial inferensi regresi pada antarmuka berjalan pada skala grid 1.000 meter untuk menjamin kecepatan render *real-time* tanpa memicu kendala batas memori peramban (*browser memory limit*).
 * **Rencana Pengembangan:**
   1. Menambahkan tombol unduh (*Download GeoTIFF / CSV*) langsung dari panel aplikasi.
   2. Menyediakan fitur *Swipe Map* (belah layar sebelum dan sesudah pembangunan) untuk memantau perubahan biomassa multitemporal secara langsung.
@@ -142,7 +140,7 @@ Aplikasi ini berhasil memperlihatkan kontras spasial cadangan biomassa di Kawasa
 
 ## 8. Kesimpulan
 
-Aplikasi Geospasial Interaktif ini berhasil mengemas seluruh alur pemodelan biomassa hutan (*Aboveground Biomass Density*) di Kawasan Ibu Kota Nusantara ke dalam platform web interaktif mandiri di Google Earth Engine. Pengguna dapat mengeksplorasi layer tematik, memeriksa nilai biomassa titik per titik melalui fitur *Pixel Inspector*, serta membaca metrik akurasi ilmiah ($R^2 = 0,7120$; $RMSE = 39,80\text{ Mg/ha}$) secara mudah dan transparan.
+Aplikasi Geospasial Interaktif ini berhasil mengemas seluruh alur pemodelan biomassa hutan (*Aboveground Biomass Density*) di Kawasan Ibu Kota Nusantara ke dalam platform web interaktif mandiri di Google Earth Engine. Pengguna dapat mengeksplorasi layer tematik, memeriksa nilai biomassa titik per titik melalui fitur *Pixel Inspector*, serta membaca metrik akurasi ilmiah ($R^2 = 0,4508$; $RMSE = 50,53\text{ Mg/ha}$; Pearson $r = 0,6735$) secara mudah dan transparan.
 
 ---
 
